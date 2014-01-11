@@ -1,4 +1,4 @@
-//*****ToDo: Opcodes, loading game, I/O*****
+//*****ToDo: loading game, I/O*****
 
 #include <stdbool.h>
 #include <stdio.h>
