@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib>
+#include <stdlib.h>
 #include "chip8.h"
 
 unsigned short opcode;
@@ -49,9 +49,9 @@ unsigned char chip8_fontset[80] =
 #define OP1 ((opcode & 0xF000) >> 12) //Macros for getting bits of the opcode
 #define OP2 ((opcode & 0x0F00) >> 8)
 #define OP3 ((opcode & 0x00F0) >> 4)
-#define OP4 ((opcode & 0x000F)
+#define OP4 ((opcode & 0x000F))
 
-void initialize();
+void initialize()
 {
 	pc		= 0x200;	//Program counter starts at 0x200
 	opcode	= 0;		//Reset opcode
@@ -89,14 +89,14 @@ void initialize();
 
 
 
-void loadgame(char[]);
+void loadgame(char name[])
 {
 	
 }
 
 
 
-void emulateCycle();
+void emulateCycle()
 {
 	//Fetch Opcode
 	opcode = memory[pc] << 8 | memory[pc + 1];
@@ -158,7 +158,7 @@ void emulateCycle();
 			break;
 
 		case 0x5:
-			if ((OP4) == 0x0)
+			if (OP4 == 0x0)
 			{
 				//Skips the next instruction if VX equals VY
 				if (V[OP2] == V[OP3])
@@ -173,7 +173,7 @@ void emulateCycle();
 
 		case 0x6:
 			//Sets VX to NN
-			V[OP2] = (opcode & 0xFF)
+			V[OP2] = (opcode & 0xFF);
 			pc += 2;
 			break;
 
@@ -211,7 +211,7 @@ void emulateCycle();
 					if (OP2 + OP3 > 0xFF)
 						V[0xF] = 1;
 					else
-						v[0xF] = 0;
+						V[0xF] = 0;
 					V[OP2] += V[OP3];
 					pc += 2;
 					break;
@@ -228,7 +228,7 @@ void emulateCycle();
 				case 0x6:
 					//Shifts VX right by one
 					//VF is set to the value of the least significant bit of VX before the shift
-					V[0xF] = (OP2 & 0x1)
+					V[0xF] = (OP2 & 0x1);
 					V[OP2] >>= 1;
 					pc += 2;
 					break;
@@ -282,12 +282,13 @@ void emulateCycle();
 
 		case 0xC:
 			//Sets VX to a random number and NN
+			;
 			int divisor = RAND_MAX / 256;
-			int num
+			int num;
 
 			do
 				num = rand() / divisor;
-			while (num > limit);
+			while (num > 255);
 
 			V[OP2] = num & (opcode & 0xFF);
 			break;
@@ -296,11 +297,12 @@ void emulateCycle();
 			//Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels
 			//Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction
 			//VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen
+			;
 			unsigned short xpos = V[OP2];
 			unsigned short ypos = V[OP3];
 			unsigned short row;
 
-			for (int i = 0; i < [OP4]; i++)		//looping across y
+			for (int i = 0; i < OP4; i++)		//looping across y
 			{
 				row = memory[I + i];
 				for (int j = 0; j < 8; j++)		//looping across x
@@ -327,13 +329,13 @@ void emulateCycle();
 			{
 				case 0x9E:
 					//Skips the next instruction if the key stored in VX is pressed
-					if (keypad(V[OP2]))
+					if (key[V[OP2]])
 						pc += 2;
 					pc += 2;
 					break;
 				case 0xA1:
 					//Skips the next instruction if the key stored in VX isn't pressed
-					if (!keypad(V[OP2]))
+					if (!key[V[OP2]])
 						pc += 2;
 					pc += 2;
 					break;
@@ -353,11 +355,12 @@ void emulateCycle();
 					break;
 				case 0x0A:
 					//A key press is awaited, and then stored in VX
+					;
 					int pressed;
 					int i = 0;
 					while (!pressed & i++ < 16)
 					{
-						if(keypad[i])
+						if(key[i])
 							pressed = 1;
 							V[OP2] = i;
 							pc += 2;
@@ -433,7 +436,7 @@ void emulateCycle();
 
 
 
-void setKeys();
+void setKeys()
 {
 	
 }
