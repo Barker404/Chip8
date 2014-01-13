@@ -6,6 +6,7 @@
 SDL_Surface* screen;
 SDL_Event event;
 
+
 int main(int argc, char **argv)
 {
 	//Setup rendering and input
