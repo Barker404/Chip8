@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include "chip8.h"
 
+#define OP1 ((opcode & 0xF000) >> 12) //Macros for getting bits of the opcode
+#define OP2 ((opcode & 0x0F00) >> 8)
+#define OP3 ((opcode & 0x00F0) >> 4)
+#define OP4 ((opcode & 0x000F))
+
 unsigned short opcode;
 
 unsigned char memory[4096];	//4K memory
@@ -45,11 +50,6 @@ unsigned char chip8_fontset[80] =
   0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
-
-#define OP1 ((opcode & 0xF000) >> 12) //Macros for getting bits of the opcode
-#define OP2 ((opcode & 0x0F00) >> 8)
-#define OP3 ((opcode & 0x00F0) >> 4)
-#define OP4 ((opcode & 0x000F))
 
 void initialize()
 {
@@ -107,9 +107,9 @@ void emulateCycle()
 			if (opcode == 0x00E0)
 			{
 				//Clears the screen
-				for (int i = 0; i < 64; i++)
+				for (int i = 0; i < 64; i++)		//looping across y
 				{
-					for (int j = 0; j < 32; j++)
+					for (int j = 0; j < 32; j++)	//looping across x
 					{
 						gfx[i][j] = 0;
 					}
