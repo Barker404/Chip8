@@ -89,7 +89,25 @@ void initialize()
 
 void loadgame(char name[])
 {
+	//Open the file from working directory
+	FILE *fp;
+	fp = fopen(name, "rb");
+	if (fp == NULL)
+	{
+		printf("Error: Game does not exist");
+		exit(1);
+	}
+
+	//Load contents of file into buffer
+	unsigned char buffer[4096-512];
+	int bufferSize;
+	bufferSize = fread(buffer, sizeof unsigned char, 4096-512, fp);
 	
+	//Load contents of buffer into memory
+	for(int i = 0; i < bufferSize; i++)
+		memory[i+512] = buffer[i];
+
+	fclose(fp);
 }
 
 
