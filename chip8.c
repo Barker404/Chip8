@@ -24,8 +24,6 @@ Memory Map
 0x200-0xFFF - Program ROM and work RAM
 */
 
-unsigned char key[16];		//HEX keypad (0x0-0xF) for input
-
 unsigned short stack[16];
 unsigned short sp;
 
@@ -87,21 +85,21 @@ void initialize()
 
 
 
-void loadgame(char name[])
+void loadGame(char name[])
 {
 	//Open the file from working directory
 	FILE *fp;
 	fp = fopen(name, "rb");
 	if (fp == NULL)
 	{
-		printf("Error: Game does not exist");
+		printf("Error: Game does not exist\n");
 		exit(1);
 	}
 
 	//Load contents of file into buffer
 	unsigned char buffer[4096-512];
 	int bufferSize;
-	bufferSize = fread(buffer, sizeof unsigned char, 4096-512, fp);
+	bufferSize = fread(buffer, sizeof (unsigned char), 4096-512, fp);
 	
 	//Load contents of buffer into memory
 	for(int i = 0; i < bufferSize; i++)
@@ -345,14 +343,22 @@ void emulateCycle()
 			{
 				case 0x9E:
 					//Skips the next instruction if the key stored in VX is pressed
+					printf("hi");
 					if (key[V[OP2]])
+					{
+						printf("ho");
 						pc += 2;
+					}
 					pc += 2;
 					break;
 				case 0xA1:
 					//Skips the next instruction if the key stored in VX isn't pressed
+					printf("fi");
 					if (!key[V[OP2]])
+					{
+						printf("fo");
 						pc += 2;
+					}
 					pc += 2;
 					break;
 				default:
@@ -372,14 +378,23 @@ void emulateCycle()
 				case 0x0A:
 					//A key press is awaited, and then stored in VX
 					;
+					printf("oh fuck\n");
 					int pressed;
-					int i = 0;
-					while (!pressed & i++ < 16)
+					int press;
+					pressed = 0;
+					
+					for (int i = 0; i < 16; i++)
 					{
-						if(key[i])
+						if (key[i])
+						{
 							pressed = 1;
-							V[OP2] = i;
-							pc += 2;
+							press = i;
+						}
+					}
+					if (pressed)
+					{
+						V[OP2] = press;
+						pc +=2;
 					}
 					break;
 				case 0x15:
@@ -448,11 +463,4 @@ void emulateCycle()
 	if (sound_timer == 1)
 		printf("BEEP!\a\n");
 		sound_timer--;
-}
-
-
-
-void setKeys()
-{
-	
 }

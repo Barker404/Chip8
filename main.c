@@ -31,9 +31,10 @@ int main(int argc, char **argv)
 
 	//Initialize Chip8 system and load game into memory
 	initialize();
-	loadGame("pong");
+	loadGame("PONG");
 
 	//Emulation loop
+	gameRunning = 1;
 	while(gameRunning)
 	{
 		//Get current time
@@ -119,19 +120,141 @@ void setupInput()
 	
 }
 
+void setKeys()
+{
+	while( SDL_PollEvent(&event) )
+	{
+		switch(event.type)
+		{
+			case SDL_KEYDOWN:
+				//Key press detected
+				switch(event.key.keysym.sym)
+				{
+					case SDLK_1:
+						key[0x1] = 1;
+						break;
+					case SDLK_2:
+						key[0x2] = 1;
+						break;
+					case SDLK_3:
+						key[0x3] = 1;
+						break;
+					case SDLK_4:
+						key[0xc] = 1;
+						break;
+					case SDLK_q:
+						key[0x4] = 1;
+						break;
+					case SDLK_w:
+						key[0x5] = 1;
+						break;
+					case SDLK_e:
+						key[0x6] = 1;
+						break;
+					case SDLK_r:
+						key[0xd] = 1;
+						break;
+					case SDLK_a:
+						key[0x7] = 1;
+						break;
+					case SDLK_s:
+						key[0x8] = 1;
+						break;
+					case SDLK_d:
+						key[0x9] = 1;
+						break;
+					case SDLK_f:
+						key[0xe] = 1;
+						break;
+					case SDLK_z:
+						key[0xa] = 1;
+						break;
+					case SDLK_x:
+						key[0x0] = 1;
+						break;
+					case SDLK_c:
+						key[0xb] = 1;
+						break;
+					case SDLK_v:
+						key[0xf] = 1;
+						break;
+					default:
+						break;
+				}
+				break;
+
+			case SDL_KEYUP:
+				//Key release detected
+				switch(event.key.keysym.sym)
+				{
+					case SDLK_1:
+						key[0x1] = 0;
+						break;
+					case SDLK_2:
+						key[0x2] = 0;
+						break;
+					case SDLK_3:
+						key[0x3] = 0;
+						break;
+					case SDLK_4:
+						key[0xc] = 0;
+						break;
+					case SDLK_q:
+						key[0x4] = 0;
+						break;
+					case SDLK_w:
+						key[0x5] = 0;
+						break;
+					case SDLK_e:
+						key[0x6] = 0;
+						break;
+					case SDLK_r:
+						key[0xd] = 0;
+						break;
+					case SDLK_a:
+						key[0x7] = 0;
+						break;
+					case SDLK_s:
+						key[0x8] = 0;
+						break;
+					case SDLK_d:
+						key[0x9] = 0;
+						break;
+					case SDLK_f:
+						key[0xe] = 0;
+						break;
+					case SDLK_z:
+						key[0xa] = 0;
+						break;
+					case SDLK_x:
+						key[0x0] = 0;
+						break;
+					case SDLK_c:
+						key[0xb] = 0;
+						break;
+					case SDLK_v:
+						key[0xf] = 0;
+						break;
+					default:
+						break;
+				}
+				break;
+
+			case SDL_QUIT:
+				gameRunning = 0;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
 void drawGraphics()
 {
 	for (int i = 0; i < 32; i++)		//looping across y
 	{
 		for (int j = 0; j < 64; j++)	//looping across x
 		{
-			if(cycles % 60 == 0)
-			{
-				if (gfx[j][i] == 0)
-					gfx[j][i] = 1;
-				else
-					gfx[j][i] = 0;
-			}
 			if (gfx[j][i] == 1)
 				SDL_FillRect(screen, &pixels[j][i], white);
 			else
