@@ -3,7 +3,8 @@
 #include <SDL/SDL.h>
 #include "chip8.h"
 
-#define SCALE 4;
+#define SCALE 1				//Scale to increase screen size by
+#define TARGET 60			//Target cycles per second
 
 SDL_Surface* screen; 		//Surface to draw on
 SDL_Event event;
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
 		cycles++;
 		//Wait until 16ms passed total (~60Hz)	
 		cycleTime = SDL_GetTicks() - startTime;
-		SDL_Delay(16-cycleTime);
+		SDL_Delay((1000/TARGET)-cycleTime);
 	}
 
 	SDL_FreeSurface(screen);

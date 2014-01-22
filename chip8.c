@@ -114,6 +114,7 @@ void emulateCycle()
 {
 	//Fetch Opcode
 	opcode = memory[pc] << 8 | memory[pc + 1];
+	printf("%x#", (int) opcode);
 	//Decode and Execute Opcode
 	switch(OP1)
 	{
@@ -136,6 +137,7 @@ void emulateCycle()
 				//Returns from a subroutine
 				sp--;
 				pc = stack[sp];
+				pc += 2;
 			}
 			else
 			{
@@ -166,7 +168,7 @@ void emulateCycle()
 
 		case 0x4:
 			//Skips the next instruction if VX doesn't equal NN
-			if (!V[OP3] == (opcode & 0xFF))
+			if (V[OP3] != (opcode & 0xFF))
 				pc += 2;
 			pc += 2;
 			break;
@@ -218,6 +220,7 @@ void emulateCycle()
 				case 0x3:
 					//Sets VX to VX xor VY
 					V[OP2] ^= V[OP3];
+					pc += 2;
 					break;
 				case 0x4:
 					//Adds VY to VX
@@ -305,6 +308,7 @@ void emulateCycle()
 			while (num > 255);
 
 			V[OP2] = num & (opcode & 0xFF);
+			pc += 2;
 			break;
 
 		case 0xD:
@@ -460,7 +464,11 @@ void emulateCycle()
 	if (delay_timer > 0)
 		delay_timer--;
 
-	if (sound_timer == 1)
-		printf("BEEP!\a\n");
+	
+	if (sound_timer > 0)
+	{
+		if (sound_timer == 1)
+			printf("BEEP!\a\n");
 		sound_timer--;
+	}
 }
