@@ -74,7 +74,7 @@ void initialize()
 	for (int i = 0; i < 4096; i++)
 		memory[i] = 0;
 
-	//Load fontset					*****0 to 80 or 80 to 160?*****
+	//Load fontset
 	for (int i = 0; i < 80; i++)
 		memory[i] = chip8_fontset[i];
 
@@ -114,7 +114,6 @@ void emulateCycle()
 {
 	//Fetch Opcode
 	opcode = memory[pc] << 8 | memory[pc + 1];
-	printf("%x#", (int) opcode);
 	//Decode and Execute Opcode
 	switch(OP1)
 	{
@@ -168,7 +167,7 @@ void emulateCycle()
 
 		case 0x4:
 			//Skips the next instruction if VX doesn't equal NN
-			if (V[OP3] != (opcode & 0xFF))
+			if (V[OP2] != (opcode & 0xFF))
 				pc += 2;
 			pc += 2;
 			break;
@@ -235,10 +234,10 @@ void emulateCycle()
 				case 0x5:
 					//VY is subtracted from VX
 					//VF is set to 0 when there's a borrow, and 1 when there isn't
-					if (OP2 < OP3)
-						V[0xF] = 1;
-					else
+					if (V[OP2] < V[OP3])
 						V[0xF] = 0;
+					else
+						V[0xF] = 1;
 					V[OP2] -= V[OP3];
 					pc += 2;
 					break;
@@ -252,17 +251,17 @@ void emulateCycle()
 				case 0x7:
 					//Sets VX to VY minus VX
 					//VF is set to 0 when there's a borrow, and 1 when there isn't
-					if (OP2 > OP3)
-						V[0xF] = 1;
-					else
+					if (V[OP2] > V[OP3])
 						V[0xF] = 0;
+					else
+						V[0xF] = 1;
 					V[OP2] = V[OP3] - V[OP2];
 					pc += 2;
 					break;
 				case 0xE:
 					//Shifts VX left by one
 					//VF is set to the value of the most significant bit of VX before the shift
-					V[0xF] = (OP2 >> 3);
+					V[0xF] = (V[OP2] >> 3);
 					V[OP2] <<= 1;
 					pc += 2;
 					break;
@@ -320,6 +319,8 @@ void emulateCycle()
 			unsigned short ypos = V[OP3];
 			unsigned short row;
 
+			int yah;
+			yah = 0;
 			for (int i = 0; i < OP4; i++)		//looping across y
 			{
 				row = memory[I + i];
@@ -347,20 +348,16 @@ void emulateCycle()
 			{
 				case 0x9E:
 					//Skips the next instruction if the key stored in VX is pressed
-					printf("hi");
 					if (key[V[OP2]])
 					{
-						printf("ho");
 						pc += 2;
 					}
 					pc += 2;
 					break;
 				case 0xA1:
 					//Skips the next instruction if the key stored in VX isn't pressed
-					printf("fi");
 					if (!key[V[OP2]])
 					{
-						printf("fo");
 						pc += 2;
 					}
 					pc += 2;
@@ -382,7 +379,7 @@ void emulateCycle()
 				case 0x0A:
 					//A key press is awaited, and then stored in VX
 					;
-					printf("oh fuck\n");
+					printf("Waiting for input\n");
 					int pressed;
 					int press;
 					pressed = 0;

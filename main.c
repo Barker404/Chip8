@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include "chip8.h"
 
-#define SCALE 1				//Scale to increase screen size by
+#define SCALE 4				//Scale to increase screen size by
 #define TARGET 60			//Target cycles per second
 
 SDL_Surface* screen; 		//Surface to draw on
