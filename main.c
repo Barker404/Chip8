@@ -4,7 +4,7 @@
 #include "chip8.h"
 
 #define SCALE 4				//Scale to increase screen size by
-#define TARGET 60			//Target cycles per second
+#define TARGET 120			//Target cycles per second
 
 SDL_Surface* screen; 		//Surface to draw on
 SDL_Event event;
@@ -41,10 +41,10 @@ int main(int argc, char **argv)
 		//Get current time
 		startTime = SDL_GetTicks();
 
-		if (cycles % 60 == 0 && cycles != 0)
+		if (cycles % TARGET == 0 && cycles != 0)
 		{
 			//Get fps over last 60 frames
-			fps = (60000 / (SDL_GetTicks() - fpsStartTime));
+			fps = ((TARGET * 1000) / (SDL_GetTicks() - fpsStartTime));
 			printf("%i\n", fps);
 			fpsStartTime = SDL_GetTicks();
 		}
